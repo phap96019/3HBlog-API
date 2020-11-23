@@ -1,23 +1,31 @@
 const mongoose = require('mongoose');
 
-const productSchema = mongoose.Schema(
+const UserSchema = mongoose.Schema(
   {
-    email: { type: String },
-    password: { type: String },
+    email: {
+      type: String,
+      require: true
+    },
+    password: {
+      type: String,
+      require: true
+    },
+    name: {
+      type: String,
+      default: '',
+    },
+    role: {
+      type: String,
+      default: 'user',
+    },
+    refreshToken: {
+      type: String,
+      default: '',
+    }
   },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  }
+
 );
 
-// Virtual populate
-productSchema.virtual('var  iants', {
-  ref: 'ProductVariant',
-  foreignField: 'product',
-  localField: '_id',
-});
+const User = mongoose.model('User', UserSchema);
 
-const Product = mongoose.model('Product', productSchema);
-
-module.exports = Product;
+module.exports = User;
