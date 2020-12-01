@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
 dotenv.config({ path: './.env' });
 
@@ -22,7 +22,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 2) ROUTES
 const userRoutes = require('./routes/user');
+const categoryRoutes = require('./routes/category');
 app.use('/user', userRoutes);
+app.use('/category', categoryRoutes);
 app.get('/', (req, res) => {
   return res.send('Welcome to 3HBlog');
 });
