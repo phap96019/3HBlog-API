@@ -23,10 +23,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 2) ROUTES
 const userRoutes = require('./routes/user');
 const categoryRoutes = require('./routes/category');
+const postRoutes = require('./routes/post');
 app.use('/user', userRoutes);
 app.use('/category', categoryRoutes);
+app.use('/post', postRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog');
+  return res.send('Welcome to 3HBlog v1.2');
+});
+app.get('/:', (req, res) => {
+  res.send('404 not found');
 });
 
 module.exports = app;

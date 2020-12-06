@@ -27,8 +27,10 @@ userRoutes
     userControllers.logout
   );
 
-userRoutes.route('/test').post(auth.authentication, function(req, res) {
-  res.send('Thử nghiệm middle');
-});
+userRoutes
+  .route('/test')
+  .post(auth.authentication, auth.permit('admin'), function(req, res) {
+    res.send('Thử nghiệm middle');
+  });
 
 module.exports = userRoutes;

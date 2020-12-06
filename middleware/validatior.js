@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, check, validationResult } = require('express-validator');
 
 const registerValidation = [
   body('email')
@@ -39,6 +39,21 @@ const createCategoryValidation = [
     .withMessage('ID của parent không hợp lệ'),
 ];
 
+const updateCategoryValidation = [
+  // check('id')
+  //   .not()
+  //   .isEmpty()
+  //   .withMessage('id không được bỏ trống'),
+  body('parent')
+    .isMongoId()
+    .optional()
+    .withMessage('ID của parent không hợp lệ'),
+  body('id')
+    .isMongoId()
+    .optional()
+    .withMessage('id không hợp lệ'),
+];
+
 const handleValidation = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -55,5 +70,6 @@ module.exports = {
   registerValidation,
   loginValidation,
   createCategoryValidation,
+  updateCategoryValidation,
   handleValidation,
 };
