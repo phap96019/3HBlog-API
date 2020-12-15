@@ -18,6 +18,7 @@ postRoutes
     postControllers.update
   );
 postRoutes.route('/delete').post(postControllers.delete);
+postRoutes.route('/search').post(postControllers.search);
 postRoutes.route('/load').get(postControllers.load);
 postRoutes.route('/load/:nameUrl').get(postControllers.loadOne);
 module.exports = postRoutes;

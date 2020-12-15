@@ -26,13 +26,15 @@ const categoryRoutes = require('./routes/category');
 const postRoutes = require('./routes/post');
 const configRoutes = require('./routes/config');
 const adRoutes = require('./routes/ad');
+const commentRoutes = require('./routes/comment');
 app.use('/user', userRoutes);
 app.use('/category', categoryRoutes);
 app.use('/post', postRoutes);
 app.use('/config', configRoutes);
 app.use('/ad', adRoutes);
+app.use('/comment', commentRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog v1.3');
+  return res.send('Welcome to 3HBlog v1.4');
 });
 app.use('*', (req, res) => {
   res.status(404).send('404 not found');

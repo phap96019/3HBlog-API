@@ -97,7 +97,14 @@ module.exports.load = async (req, res) => {
 
 module.exports.loadOne = async (req, res) => {
   const { nameUrl } = req.params;
-  const post = await Post.findOne({ nameUrl: nameUrl });
+  const post = await Post.findOne({ nameUrl: nameUrl }).populate({
+    path: 'comments',
+    select: 'user content',
+    populate: {
+      path: 'user',
+      select: 'name email',
+    },
+  });
   if (post) {
     res.status(200).send(post);
   } else {
@@ -117,4 +124,20 @@ module.exports.delete = async (req, res) => {
       message: 'Không thể xóa được!',
     });
   }
+};
+
+module.exports.search = async (req, res) => {
+  const keySearch = slug(req.body.keySearch, '-');
+  const posts = await Post.find({
+    nameUrl: { $regex: keySearch },
+  });
+  if (posts.length === 0) {
+    res.status(200).send({
+      message: 'Không tìm thấy bài viết phù hợp',
+    });
+  }
+  res.status(200).send({
+    message: `Tìm thấy ${posts.length} bài viết phù hợp`,
+    data: posts,
+  });
 };
