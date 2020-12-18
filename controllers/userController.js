@@ -37,6 +37,7 @@ module.exports.login = async (req, res) => {
         message: 'authentication done',
         token: token,
         refreshToken: refreshToken,
+        role: emailExist.role,
       });
     } else {
       res.status(401).send({
