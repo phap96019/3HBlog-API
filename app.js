@@ -2,10 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
 dotenv.config({ path: './.env' });
 
 const app = express();
+app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
