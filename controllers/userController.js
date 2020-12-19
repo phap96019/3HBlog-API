@@ -46,7 +46,10 @@ module.exports.login = async (req, res) => {
       });
     }
   } else {
-    res.status(401).send('Email hoặc password không đúng!');
+    res.status(401).send({
+      success: false,
+      message: 'Email hoặc password không đúng!',
+    });
   }
 };
 
