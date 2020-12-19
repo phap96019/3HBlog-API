@@ -6,7 +6,10 @@ module.exports.register = async (req, res) => {
   const { email, name, password } = req.body;
   const emailExist = await User.findOne({ email: email });
   if (emailExist) {
-    res.status(403).send('Email đã tồn tại');
+    res.status(403).send({
+      success: false,
+      message: 'Email đã tồn tại',
+    });
   } else {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
@@ -16,7 +19,10 @@ module.exports.register = async (req, res) => {
       name: name,
     });
     await newUser.save();
-    res.status(201).send('Tạo người dùng thành công');
+    res.status(201).send({
+      success: true,
+      message: 'Tạo người dùng thành công',
+    });
   }
 };
 module.exports.login = async (req, res) => {
@@ -56,7 +62,10 @@ module.exports.login = async (req, res) => {
 module.exports.refreshToken = async (req, res) => {
   const refreshToken = req.body.refreshToken || req.headers['refresh-token'];
   if (!refreshToken) {
-    res.status(403).send('No token provided');
+    res.status(403).send({
+      success: false,
+      message: 'No token provided',
+    });
   } else {
     const existRefreshToken = await User.findOne({
       refreshToken: refreshToken,
@@ -84,7 +93,10 @@ module.exports.refreshToken = async (req, res) => {
         });
       }
     } else {
-      res.status(403).send('No token provided');
+      res.status(403).send({
+        success: false,
+        message: 'No token provided',
+      });
     }
   }
 };
@@ -93,5 +105,8 @@ module.exports.logout = async (req, res) => {
   const user = await User.findOne({ _id: req._idUser });
   user.refreshToken = '';
   await user.save();
-  res.send('logout');
+  res.status(200).send({
+    success: true,
+    message: 'logout',
+  });
 };

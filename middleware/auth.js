@@ -3,7 +3,10 @@ const User = require('../models/User');
 const authentication = (req, res, next) => {
   const token = req.body.token || req.headers['token'] || req.query.token;
   if (!token) {
-    res.status(403).send('No token provided');
+    res.status(403).send({
+      success: false,
+      message: 'No token provided',
+    });
   } else {
     const key = process.env.JWTSecret;
     try {
