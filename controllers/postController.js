@@ -13,10 +13,17 @@ module.exports.create = async (req, res) => {
   try {
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
-      const file = files.image.path;
-      const ret = await cloudinary.uploader.upload(file, {
-        folder: 'home/3H-blog',
-      });
+      let ret = {};
+      if (files && files.image && files.image.path) {
+        const file = files.image.path;
+        ret = await cloudinary.uploader.upload(file, {
+          folder: 'home/3H-blog',
+        });
+      } else {
+        ret.url =
+          'https://image-us.eva.vn/upload/2-2020/images/2020-04-08/6-cach-lam-thit-bo-xao-don-gian-ma-ngon-huong-vi-hap-dan-nhu-ngoai-hang-4-1586341641-277-width596height396.jpg';
+      }
+
       const { title, content, category, tags, summary } = fields;
       const _category = category.split(',');
       const _tags = tags.split(',');
