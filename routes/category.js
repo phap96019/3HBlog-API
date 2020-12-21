@@ -1,7 +1,8 @@
 const express = require('express');
 const categoryRoutes = express.Router();
-const categoryControllers = require('../controllers/categoryController');
-const validator = require('../middleware/validatior');
+const categoryControllers = require('../controllers/category');
+const validator = require('../controllers/category/validator');
+const { handleValidation } = require('../middleware/validatior');
 const auth = require('../middleware/auth');
 
 categoryRoutes
@@ -10,7 +11,7 @@ categoryRoutes
     auth.authentication,
     auth.permit('admin'),
     validator.createCategoryValidation,
-    validator.handleValidation,
+    handleValidation,
     categoryControllers.create
   );
 categoryRoutes.route('/load').get(categoryControllers.loadAllCategory);
@@ -19,8 +20,8 @@ categoryRoutes
   .post(
     auth.authentication,
     auth.permit('admin'),
-    validator.createCategoryValidation,
-    validator.handleValidation,
+    validator.updateCategoryValidation,
+    handleValidation,
     categoryControllers.update
   );
 module.exports = categoryRoutes;

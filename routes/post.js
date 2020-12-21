@@ -13,7 +13,6 @@ postRoutes
   .post(
     auth.authentication,
     auth.permit('admin'),
-    validator.updateCategoryValidation,
     validator.handleValidation,
     postControllers.update
   );
