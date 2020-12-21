@@ -25,16 +25,16 @@ module.exports.create = async (req, res) => {
       }
 
       const { title, content, category, tags, summary } = fields;
-      const _category = category.split(',');
-      const _tags = tags.split(',');
+      const _category = category ? category.split(',') : [];
+      const _tags = tags ? tags.split(',') : [];
       const post = new Post({
         nameUrl: slug(title, '-'),
         title: title,
         img: ret.url,
-        content: content,
+        content: content ? content : '',
         category: _category,
         tags: _tags,
-        summary: summary,
+        summary: summary ? summary : '',
       });
       await post.save();
       res.status(200).send({
