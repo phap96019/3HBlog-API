@@ -13,34 +13,44 @@ module.exports.create = async (req, res) => {
   try {
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
-      let ret = {};
-      if (files && files.image && files.image.path) {
-        const file = files.image.path;
-        ret = await cloudinary.uploader.upload(file, {
-          folder: 'home/3H-blog',
+      try {
+        const { title, content, category, tags, summary } = fields;
+        // Check fields require
+        if (!title) throw 'Không được bỏ trống title';
+        if (!content) throw 'Không được bỏ trống content';
+        if (!summary) throw 'Không được bỏ trống summary';
+        let ret = {};
+        if (files && files.image && files.image.path) {
+          const file = files.image.path;
+          ret = await cloudinary.uploader.upload(file, {
+            folder: 'home/3H-blog',
+          });
+        } else {
+          ret.url =
+            'https://res.cloudinary.com/ddiqvd0ty/image/upload/v1608477520/home/3H-blog/fgvpl0ouulibkhxqjpad.jpg';
+        }
+        const _category = category ? category.split(',') : [];
+        const _tags = tags ? tags.split(',') : [];
+        const post = new Post({
+          nameUrl: slug(title, '-'),
+          title: title,
+          img: ret.url,
+          content: content ? content : '',
+          category: _category,
+          tags: _tags,
+          summary: summary ? summary : '',
         });
-      } else {
-        ret.url =
-          'https://image-us.eva.vn/upload/2-2020/images/2020-04-08/6-cach-lam-thit-bo-xao-don-gian-ma-ngon-huong-vi-hap-dan-nhu-ngoai-hang-4-1586341641-277-width596height396.jpg';
+        await post.save();
+        res.status(200).send({
+          success: true,
+          data: post,
+        });
+      } catch (error) {
+        res.status(403).send({
+          success: false,
+          message: error,
+        });
       }
-
-      const { title, content, category, tags, summary } = fields;
-      const _category = category ? category.split(',') : [];
-      const _tags = tags ? tags.split(',') : [];
-      const post = new Post({
-        nameUrl: slug(title, '-'),
-        title: title,
-        img: ret.url,
-        content: content ? content : '',
-        category: _category,
-        tags: _tags,
-        summary: summary ? summary : '',
-      });
-      await post.save();
-      res.status(200).send({
-        success: true,
-        data: post,
-      });
     });
   } catch (error) {
     res.status(403).send({

@@ -35,7 +35,7 @@ app.use('/config', configRoutes);
 app.use('/ad', adRoutes);
 app.use('/comment', commentRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog v1.6');
+  return res.send('Welcome to 3HBlog v2.0');
 });
 app.use('*', (req, res) => {
   res.status(404).send('404 not found');
