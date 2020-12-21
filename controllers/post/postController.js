@@ -1,6 +1,6 @@
 const formidable = require('formidable');
 const cloudinary = require('cloudinary').v2;
-const Post = require('../models/Post');
+const Post = require('../../models/Post');
 const slug = require('slug');
 
 cloudinary.config({
@@ -131,7 +131,7 @@ module.exports.loadOne = async (req, res) => {
   }
 };
 
-module.exports.delete = async (req, res) => {
+module.exports.deletePost = async (req, res) => {
   const { id } = req.body;
   const postDeleted = await Post.deleteOne({ _id: id });
   if (postDeleted.n == 1) {

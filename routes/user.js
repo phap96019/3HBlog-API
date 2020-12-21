@@ -1,14 +1,15 @@
 const express = require('express');
 const userRoutes = express.Router();
-const userControllers = require('../controllers/userController');
-const validator = require('../middleware/validatior');
+const userControllers = require('../controllers/user');
+const validator = require('../controllers/user/validator');
+const { handleValidation } = require('../middleware/validatior');
 const auth = require('../middleware/auth');
 
 userRoutes
   .route('/register')
   .post(
     validator.registerValidation,
-    validator.handleValidation,
+    handleValidation,
     userControllers.register
   );
 userRoutes
@@ -21,11 +22,7 @@ userRoutes
 userRoutes.route('/refreshToken').post(userControllers.refreshToken);
 userRoutes
   .route('/logout')
-  .post(
-    auth.authentication,
-    validator.handleValidation,
-    userControllers.logout
-  );
+  .post(auth.authentication, handleValidation, userControllers.logout);
 
 userRoutes
   .route('/test')

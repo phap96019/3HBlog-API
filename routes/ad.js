@@ -1,6 +1,6 @@
 const express = require('express');
 const adRoutes = express.Router();
-const adController = require('../controllers/adController');
+const adController = require('../controllers/advertisement');
 const auth = require('../middleware/auth');
 
 adRoutes
@@ -9,5 +9,5 @@ adRoutes
 adRoutes.route('/load').get(adController.loadAllAd);
 adRoutes
   .route('/delete')
-  .post(auth.authentication, auth.permit('admin'), adController.delete);
+  .post(auth.authentication, auth.permit('admin'), adController.deleteAd);
 module.exports = adRoutes;

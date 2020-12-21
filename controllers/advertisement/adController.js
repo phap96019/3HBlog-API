@@ -1,4 +1,4 @@
-const Ad = require('../models/Ad');
+const Ad = require('../../models/Ad');
 
 module.exports.create = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ module.exports.loadAllAd = async (req, res) => {
   }
 };
 
-module.exports.delete = async (req, res) => {
+module.exports.deleteAd = async (req, res) => {
   try {
     const { id } = req.body;
     const categories = await Ad.deleteOne({ _id: id });

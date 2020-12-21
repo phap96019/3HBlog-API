@@ -1,4 +1,4 @@
-const Config = require('../models/Config');
+const Config = require('../../models/Config');
 
 module.exports.create = async (req, res) => {
   const { type, config } = req.body;
@@ -7,7 +7,7 @@ module.exports.create = async (req, res) => {
   if (existConfig) {
     res.status(403).send({
       success: false,
-      message: ` Type Config này dã tồn tại`,
+      message: `Type Config này dã tồn tại`,
     });
   } else {
     const newConfig = new Config({

@@ -1,7 +1,6 @@
 const express = require('express');
 const postRoutes = express.Router();
-const postControllers = require('../controllers/postController');
-const validator = require('../middleware/validatior');
+const postControllers = require('../controllers/post');
 const auth = require('../middleware/auth');
 
 postRoutes
@@ -10,15 +9,10 @@ postRoutes
 
 postRoutes
   .route('/update')
-  .post(
-    auth.authentication,
-    auth.permit('admin'),
-    validator.handleValidation,
-    postControllers.update
-  );
+  .post(auth.authentication, auth.permit('admin'), postControllers.update);
 postRoutes
   .route('/delete')
-  .post(auth.authentication, auth.permit('admin'), postControllers.delete);
+  .post(auth.authentication, auth.permit('admin'), postControllers.deletePost);
 postRoutes.route('/search').post(postControllers.search);
 postRoutes.route('/load').get(postControllers.load);
 postRoutes.route('/load/:nameUrl').get(postControllers.loadOne);

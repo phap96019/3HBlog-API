@@ -1,6 +1,6 @@
 const express = require('express');
 const configRoutes = express.Router();
-const configControllers = require('../controllers/configController');
+const configControllers = require('../controllers/config');
 const validator = require('../middleware/validatior');
 const auth = require('../middleware/auth');
 
