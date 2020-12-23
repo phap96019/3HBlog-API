@@ -109,7 +109,9 @@ module.exports.load = async (req, res) => {
   const posts = await Post.find()
     .skip(pageSize * page - pageSize)
     .limit(pageSize);
-  res.status(200).send(posts);
+  res.status(200).send({
+    data: posts,
+  });
 };
 
 module.exports.loadOne = async (req, res) => {
