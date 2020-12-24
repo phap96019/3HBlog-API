@@ -41,6 +41,7 @@ module.exports.create = async (req, res) => {
           summary: summary ? summary : '',
         });
         await post.save();
+        console.log(post);
         res.status(200).send({
           success: true,
           data: post,
@@ -67,10 +68,12 @@ module.exports.update = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
       const post = await Post.findOne({ _id: fields.id });
       if (post) {
-        const file = files.image.path;
-        const ret = await cloudinary.uploader.upload(file, {
-          folder: 'home/3H-blog',
-        });
+        if (files && files.image && files.image.path) {
+          const file = files.image.path;
+          const ret = await cloudinary.uploader.upload(file, {
+            folder: 'home/3H-blog',
+          });
+        }
         const { title, content, category, tags, summary } = fields;
         const _category = category.split(',');
         const _tags = tags.split(',');
@@ -118,7 +121,7 @@ module.exports.loadOne = async (req, res) => {
   const { nameUrl } = req.params;
   const post = await Post.findOne({ nameUrl: nameUrl }).populate({
     path: 'comments',
-    select: 'user content',
+    select: 'user content createdAt',
     populate: {
       path: 'user',
       select: 'name email',

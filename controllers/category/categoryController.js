@@ -1,5 +1,5 @@
 const Category = require('../../models/Category');
-
+const slug = require('slug');
 module.exports.create = async (req, res) => {
   const { name, parent } = req.body;
   const existCategory = await Category.findOne({ name: name });
@@ -12,6 +12,7 @@ module.exports.create = async (req, res) => {
     try {
       const category = new Category({
         name: name,
+        nameUrl: slug(name, '-'),
         parent: parent,
       });
       await category.save();
@@ -30,6 +31,13 @@ module.exports.create = async (req, res) => {
 
 module.exports.loadAllCategory = async (req, res) => {
   const categories = await Category.find({ status: 'available' });
+  res.status(200).send({
+    data: categories,
+  });
+};
+
+module.exports.loadAllCategoryForCms = async (req, res) => {
+  const categories = await Category.find();
   res.status(200).send({
     data: categories,
   });

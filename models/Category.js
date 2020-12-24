@@ -15,6 +15,10 @@ const CategorySchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  nameUrl: {
+    type: String,
+    require: true,
+  },
 });
 
 const Category = mongoose.model('Category', CategorySchema);

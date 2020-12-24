@@ -25,7 +25,7 @@ const PostSchema = mongoose.Schema(
         type: String,
       },
     ],
-    View: {
+    view: {
       type: Number,
       default: 0,
     },
@@ -38,8 +38,8 @@ const PostSchema = mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  { timestamps: true }
+    timestamps: true,
+  }
 );
 
 PostSchema.virtual('comments', {

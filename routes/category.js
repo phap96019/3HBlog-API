@@ -15,6 +15,7 @@ categoryRoutes
     categoryControllers.create
   );
 categoryRoutes.route('/load').get(categoryControllers.loadAllCategory);
+categoryRoutes.route('/loadCms').get(categoryControllers.loadAllCategoryForCms);
 categoryRoutes
   .route('/update')
   .post(
