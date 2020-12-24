@@ -40,10 +40,14 @@ module.exports.login = async (req, res) => {
       emailExist.refreshToken = refreshToken;
       await emailExist.save();
       res.status(200).send({
-        message: 'authentication done',
+        message: 'Đăng nhập thành công',
         token: token,
         refreshToken: refreshToken,
-        role: emailExist.role,
+        user: {
+          role: emailExist.role,
+          name: emailExist.name,
+          email: emailExist.email,
+        },
       });
     } else {
       res.status(401).send({
