@@ -36,6 +36,7 @@ const configRoutes = require('./routes/config');
 const adRoutes = require('./routes/ad');
 const commentRoutes = require('./routes/comment');
 const bannerRoutes = require('./routes/banner');
+const reportRoutes = require('./routes/report');
 app.use('/user', userRoutes);
 app.use('/category', categoryRoutes);
 app.use('/post', postRoutes);
@@ -43,6 +44,7 @@ app.use('/config', configRoutes);
 app.use('/ad', adRoutes);
 app.use('/comment', commentRoutes);
 app.use('/banner', bannerRoutes);
+app.use('/report', reportRoutes);
 app.get('/', (req, res) => {
   return res.send('Welcome to 3HBlog v2.3');
 });
