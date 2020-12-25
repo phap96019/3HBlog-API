@@ -41,7 +41,6 @@ module.exports.create = async (req, res) => {
           summary: summary ? summary : '',
         });
         await post.save();
-        console.log(post);
         res.status(200).send({
           success: true,
           data: post,
@@ -63,7 +62,6 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
   try {
-    console.log(req);
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
       const post = await Post.findOne({ _id: fields.id });
@@ -128,6 +126,8 @@ module.exports.loadOne = async (req, res) => {
     },
   });
   if (post) {
+    post.views += 1;
+    post.save();
     res.status(200).send(post);
   } else {
     res.status(404).send({
@@ -157,9 +157,10 @@ module.exports.search = async (req, res) => {
     res.status(200).send({
       message: 'Không tìm thấy bài viết phù hợp',
     });
+  } else {
+    res.status(200).send({
+      message: `Tìm thấy ${posts.length} bài viết phù hợp`,
+      data: posts,
+    });
   }
-  res.status(200).send({
-    message: `Tìm thấy ${posts.length} bài viết phù hợp`,
-    data: posts,
-  });
 };

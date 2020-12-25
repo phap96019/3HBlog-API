@@ -25,7 +25,7 @@ const PostSchema = mongoose.Schema(
         type: String,
       },
     ],
-    view: {
+    views: {
       type: Number,
       default: 0,
     },

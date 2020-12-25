@@ -16,4 +16,8 @@ postRoutes
 postRoutes.route('/search').post(postControllers.search);
 postRoutes.route('/load').get(postControllers.load);
 postRoutes.route('/load/:nameUrl').get(postControllers.loadOne);
+postRoutes.route('/loadRandom').get(postControllers.loadRandom);
+postRoutes.route('/loadMostViews').get(postControllers.loadMostViews);
+postRoutes.route('/loadLatest').get(postControllers.loadLatest);
+
 module.exports = postRoutes;

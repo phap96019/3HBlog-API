@@ -1,4 +1,4 @@
-module.exports = {
+const {
   create,
   update,
   load,
@@ -6,3 +6,17 @@ module.exports = {
   search,
   deletePost,
 } = require('./postController');
+
+const { loadRandom, loadMostViews, loadLatest } = require('./loadPost');
+
+module.exports = {
+  create,
+  update,
+  load,
+  loadOne,
+  search,
+  deletePost,
+  loadRandom,
+  loadMostViews,
+  loadLatest,
+};
