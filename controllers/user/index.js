@@ -3,4 +3,5 @@ module.exports = {
   login,
   refreshToken,
   logout,
+  loadALlUser,
 } = require('./userController');

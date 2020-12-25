@@ -114,3 +114,10 @@ module.exports.logout = async (req, res) => {
     message: 'logout',
   });
 };
+
+module.exports.loadALlUser = async (req, res) => {
+  const users = await User.find().select('name email role');
+  res.status(200).send({
+    data: users,
+  });
+};

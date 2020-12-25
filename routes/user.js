@@ -23,6 +23,14 @@ userRoutes.route('/refreshToken').post(userControllers.refreshToken);
 userRoutes
   .route('/logout')
   .post(auth.authentication, handleValidation, userControllers.logout);
+userRoutes
+  .route('/loadALlUser')
+  .get(
+    auth.authentication,
+    auth.permit('admin'),
+    handleValidation,
+    userControllers.loadALlUser
+  );
 
 userRoutes
   .route('/test')
