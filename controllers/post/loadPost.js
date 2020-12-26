@@ -32,7 +32,7 @@ module.exports.loadRandom = async (req, res) => {
 module.exports.loadMostViews = async (req, res) => {
   const posts = await Post.find()
     .sort({ views: -1 })
-    .limit(5);
+    .limit(7);
   res.status(200).send({
     data: posts,
   });
