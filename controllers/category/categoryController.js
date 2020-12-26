@@ -44,14 +44,27 @@ module.exports.loadAllCategoryForCms = async (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
-  const { id, name, status, parent } = req.body;
-  const categories = await Category.findOne({ _id: id });
-  categories.name = name || categories.name;
-  categories.status = status === 'available' ? 'blocked' : 'available';
-  categories.parent = parent || categories.parent;
-  await categories.save();
-  res.status(200).send({
-    success: true,
-    message: 'Lưu dữ liệu thành công',
-  });
+  try {
+    const { id, name, status, parent } = req.body;
+    const existCategory = await Category.findOne({ _id: id });
+    if (!existCategory) throw 'Category này không tồn tại';
+    if (status !== 'available' && status !== 'blocked') {
+      throw 'Status không hợp lệ';
+    }
+
+    existCategory.name = name || existCategory.name;
+    existCategory.status = status ? status : existCategory.status;
+    existCategory.parent = parent ? parent : existCategory.parent;
+    existCategory.nameUrl = name ? slug(name, '-') : existCategory.nameUrl;
+    await existCategory.save();
+    res.status(200).send({
+      success: true,
+      message: 'Lưu dữ liệu thành công',
+    });
+  } catch (error) {
+    res.status(403).send({
+      success: false,
+      message: error,
+    });
+  }
 };
