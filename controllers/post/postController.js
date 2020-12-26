@@ -2,6 +2,7 @@ const formidable = require('formidable');
 const cloudinary = require('cloudinary').v2;
 const Post = require('../../models/Post');
 const slug = require('slug');
+var ObjectID = require('mongodb').ObjectID;
 
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -64,35 +65,44 @@ module.exports.update = async (req, res) => {
   try {
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
-      const post = await Post.findOne({ _id: fields.id });
-      if (post) {
-        if (files && files.image && files.image.path) {
-          const file = files.image.path;
-          const ret = await cloudinary.uploader.upload(file, {
-            folder: 'home/3H-blog',
+      try {
+        if (!ObjectID.isValid(fields.id)) throw 'id không hợp lệ';
+        const post = await Post.findOne({ _id: fields.id });
+        let ret = {};
+        if (post) {
+          if (files && files.image && files.image.path) {
+            const file = files.image.path;
+            ret = await cloudinary.uploader.upload(file, {
+              folder: 'home/3H-blog',
+            });
+          } else {
+            ret.url = post.img;
+          }
+          const { title, content, category, tags, summary } = fields;
+
+          post.nameUrl = title ? slug(title, '-') : post.nameUrl;
+          post.title = title || post.title;
+          post.img = ret.url;
+          post.content = content || post.content;
+          post.category = category ? category.split(',') : post.category;
+          post.tags = tags ? tags.split(',') : post.tags;
+          post.summary = summary || post.summary;
+
+          await post.save();
+          res.status(200).send({
+            success: true,
+            data: post,
+          });
+        } else {
+          res.status(403).send({
+            success: false,
+            message: 'Không tìm thấy _id bài viết',
           });
         }
-        const { title, content, category, tags, summary } = fields;
-        const _category = category.split(',');
-        const _tags = tags.split(',');
-
-        post.nameUrl = slug(title, '-') || post.nameUrl;
-        post.title = title || post.title;
-        post.img = ret.url || post.img;
-        post.content = content || post.content;
-        post.category = _category || post.category;
-        post.tags = _tags || post.tags;
-        post.summary = summary || post.summary;
-
-        await post.save();
-        res.status(200).send({
-          success: true,
-          data: post,
-        });
-      } else {
-        res.status(403).send({
+      } catch (error) {
+        res.status(404).send({
           success: false,
-          message: 'Không tìm thấy _id bài viết',
+          message: error,
         });
       }
     });
@@ -105,12 +115,15 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.load = async (req, res) => {
+  const postsNumber = await Post.countDocuments();
   const page = parseInt(req.query.page, 10) || 1;
   const pageSize = parseInt(req.query.pageSize, 10) || 10;
   const posts = await Post.find()
+    .select('_id title nameUrl img summary category views tags')
     .skip(pageSize * page - pageSize)
     .limit(pageSize);
   res.status(200).send({
+    total: postsNumber,
     data: posts,
   });
 };

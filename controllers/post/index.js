@@ -7,7 +7,12 @@ const {
   deletePost,
 } = require('./postController');
 
-const { loadRandom, loadMostViews, loadLatest } = require('./loadPost');
+const {
+  loadRandom,
+  loadMostViews,
+  loadLatest,
+  loadByCategory,
+} = require('./loadPost');
 
 module.exports = {
   create,
@@ -19,4 +24,5 @@ module.exports = {
   loadRandom,
   loadMostViews,
   loadLatest,
+  loadByCategory,
 };
