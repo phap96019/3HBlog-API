@@ -48,7 +48,7 @@ app.use('/banner', bannerRoutes);
 app.use('/report', reportRoutes);
 app.use('/upload', uploadRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog v2.4');
+  return res.send('Welcome to 3HBlog v2.5');
 });
 app.use('*', (req, res) => {
   res.status(404).send('404 not found');

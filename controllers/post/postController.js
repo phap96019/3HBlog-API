@@ -119,7 +119,7 @@ module.exports.load = async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const pageSize = parseInt(req.query.pageSize, 10) || 10;
   const posts = await Post.find()
-    .select('_id title nameUrl img summary category views tags')
+    .select('_id title nameUrl img summary category views tags createdAt')
     .skip(pageSize * page - pageSize)
     .limit(pageSize);
   res.status(200).send({
