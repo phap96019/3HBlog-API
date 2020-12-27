@@ -36,6 +36,24 @@ module.exports.loadAllCategory = async (req, res) => {
   });
 };
 
+module.exports.loadDetaiDetaiCategory = async (req, res) => {
+  const { nameUrl } = req.query;
+  console.log(nameUrl);
+  const category = await Category.findOne({
+    status: 'available',
+    nameUrl: nameUrl,
+  });
+  if (category) {
+    res.status(200).send({
+      data: category,
+    });
+  } else {
+    res.status(404).send({
+      message: 'Không tìm thấy category',
+    });
+  }
+};
+
 module.exports.loadAllCategoryForCms = async (req, res) => {
   const categories = await Category.find();
   res.status(200).send({

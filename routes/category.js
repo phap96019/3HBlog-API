@@ -17,6 +17,9 @@ categoryRoutes
 categoryRoutes.route('/load').get(categoryControllers.loadAllCategory);
 categoryRoutes.route('/loadCms').get(categoryControllers.loadAllCategoryForCms);
 categoryRoutes
+  .route('/loadDetaiDetaiCategory')
+  .get(categoryControllers.loadDetaiDetaiCategory);
+categoryRoutes
   .route('/update')
   .post(
     auth.authentication,
