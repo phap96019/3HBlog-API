@@ -40,7 +40,6 @@ module.exports.loadDetaiDetaiCategory = async (req, res) => {
   const { nameUrl } = req.query;
   console.log(nameUrl);
   const category = await Category.findOne({
-    status: 'available',
     nameUrl: nameUrl,
   });
   if (category) {
