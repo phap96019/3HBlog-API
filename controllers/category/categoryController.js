@@ -1,5 +1,6 @@
 const Category = require('../../models/Category');
 const slug = require('slug');
+const Post = require('../../models/Post');
 module.exports.create = async (req, res) => {
   const { name, parent } = req.body;
   const existCategory = await Category.findOne({ name: name });
@@ -65,6 +66,7 @@ module.exports.update = async (req, res) => {
     const { id, name, status, parent } = req.body;
     const existCategory = await Category.findOne({ _id: id });
     if (!existCategory) throw 'Category này không tồn tại';
+    const oldCat = existCategory.name;
     if (status !== 'available' && status !== 'blocked') {
       throw 'Status không hợp lệ';
     }
@@ -74,6 +76,12 @@ module.exports.update = async (req, res) => {
     existCategory.parent = parent ? parent : existCategory.parent;
     existCategory.nameUrl = name ? slug(name, '-') : existCategory.nameUrl;
     await existCategory.save();
+    // update all post
+    await Post.update(
+      { category: oldCat },
+      { $set: { category: [`${name}`] } },
+      { multi: true }
+    );
     res.status(200).send({
       success: true,
       message: 'Lưu dữ liệu thành công',
