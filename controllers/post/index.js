@@ -12,6 +12,7 @@ const {
   loadMostViews,
   loadLatest,
   loadByCategory,
+  loadByTag,
 } = require('./loadPost');
 
 module.exports = {
@@ -25,4 +26,5 @@ module.exports = {
   loadMostViews,
   loadLatest,
   loadByCategory,
+  loadByTag,
 };

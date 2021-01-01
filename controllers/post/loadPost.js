@@ -73,3 +73,29 @@ module.exports.loadByCategory = async (req, res) => {
     data: results,
   });
 };
+
+module.exports.loadByTag = async (req, res) => {
+  const { tag } = req.query;
+  let { page, pageSize } = req.query;
+  page = parseInt(page, 10) || 1;
+  pageSize = parseInt(pageSize, 10) || 10;
+  const posts = await Post.find({ tags: tag })
+    .select(
+      '_id title nameUrl img summary category views tags createdAt comments'
+    )
+    .populate({
+      path: 'comments',
+    })
+    .sort({ createdAt: -1 });
+  const postsIn = posts.slice((page - 1) * pageSize, page * pageSize);
+  const results = postsIn.map((post) => {
+    const temp = JSON.parse(JSON.stringify(post));
+    temp.comments = post.comments.length;
+    return temp;
+  });
+  res.status(200).send({
+    message: `Tìm thấy ${posts.length} kết quả`,
+    total: posts.length,
+    data: results,
+  });
+};

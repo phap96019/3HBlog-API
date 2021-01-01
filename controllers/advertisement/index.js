@@ -1,1 +1,6 @@
-module.exports = { create, loadAllAd, deleteAd } = require('./adController');
+module.exports = {
+  create,
+  loadAllAd,
+  deleteAd,
+  loadAd,
+} = require('./adController');

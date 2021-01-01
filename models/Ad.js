@@ -5,6 +5,14 @@ const AdSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  link: {
+    type: String,
+    default: '#',
+  },
+  views: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Ad = mongoose.model('Ad', AdSchema);

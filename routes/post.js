@@ -26,5 +26,6 @@ postRoutes.route('/loadRandom').get(postControllers.loadRandom);
 postRoutes.route('/loadMostViews').get(postControllers.loadMostViews);
 postRoutes.route('/loadLatest').get(postControllers.loadLatest);
 postRoutes.route('/loadByCategory').get(postControllers.loadByCategory);
+postRoutes.route('/loadByTag').get(postControllers.loadByTag);
 
 module.exports = postRoutes;

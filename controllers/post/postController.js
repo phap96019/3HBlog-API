@@ -30,8 +30,16 @@ module.exports.create = async (req, res) => {
           ret.url =
             'https://res.cloudinary.com/ddiqvd0ty/image/upload/v1608477520/home/3H-blog/fgvpl0ouulibkhxqjpad.jpg';
         }
-        const _category = category ? category.split(',') : [];
-        const _tags = tags ? tags.split(',') : [];
+        let _category = [];
+        if (category) {
+          const temp1 = category.split(',');
+          _category = temp1.map((t) => t.trim());
+        }
+        let _tags = [];
+        if (tags) {
+          const temp1 = tags.split(',');
+          _tags = temp1.map((t) => t.trim());
+        }
         const post = new Post({
           nameUrl: slug(title, '-'),
           title: title,

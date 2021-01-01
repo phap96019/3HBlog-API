@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 // limit requests
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 500, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
@@ -48,7 +48,7 @@ app.use('/banner', bannerRoutes);
 app.use('/report', reportRoutes);
 app.use('/upload', uploadRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog v2.5');
+  return res.send('Welcome to 3HBlog v2.6');
 });
 app.use('*', (req, res) => {
   res.status(404).send('404 not found');

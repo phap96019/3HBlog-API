@@ -39,7 +39,6 @@ module.exports.loadAllCategory = async (req, res) => {
 
 module.exports.loadDetaiDetaiCategory = async (req, res) => {
   const { nameUrl } = req.query;
-  console.log(nameUrl);
   const category = await Category.findOne({
     nameUrl: nameUrl,
   });
