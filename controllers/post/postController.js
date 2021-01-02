@@ -171,17 +171,59 @@ module.exports.deletePost = async (req, res) => {
 
 module.exports.search = async (req, res) => {
   const keySearch = slug(req.body.keySearch, '-');
-  const posts = await Post.find({
-    nameUrl: { $regex: keySearch },
+  const keySearchs = keySearch.split('-');
+  // get all data
+  let posts = [];
+  for (key of keySearchs) {
+    const posts1 = await Post.find({
+      nameUrl: { $regex: key },
+    }).select('_id title nameUrl img summary category views tags createdAt');
+    const posts2 = await Post.find({
+      category: { $regex: key },
+    }).select('_id title nameUrl img summary category views tags createdAt');
+    const posts3 = await Post.find({
+      tags: { $regex: key },
+    }).select('_id title nameUrl img summary category views tags createdAt');
+    posts = posts
+      .concat(posts1)
+      .concat(posts2)
+      .concat(posts3);
+  }
+  // filter duplicate
+  const postUnique = [];
+  posts.forEach((post) => {
+    // const key = JSON.stringify(post);
+    let key = post._id;
+    const existPost = postUnique.findIndex((post) => {
+      return post.id.toString() === key.toString();
+    });
+    if (existPost > -1) {
+      postUnique[existPost].score += 1;
+    } else {
+      postUnique.push({
+        id: key,
+        post: post,
+        score: 1,
+      });
+    }
   });
+  const results = [];
+  postUnique
+    .sort((a, b) => {
+      return b.score - a.score;
+    })
+    .forEach((item) => {
+      results.push(item.post);
+    });
   if (posts.length === 0) {
     res.status(200).send({
       message: 'Không tìm thấy bài viết phù hợp',
     });
   } else {
     res.status(200).send({
-      message: `Tìm thấy ${posts.length} bài viết phù hợp`,
-      data: posts,
+      message: `Tìm thấy ${results.length} bài viết phù hợp`,
+      total: results.length,
+      data: results,
     });
   }
 };

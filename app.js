@@ -38,6 +38,7 @@ const commentRoutes = require('./routes/comment');
 const bannerRoutes = require('./routes/banner');
 const reportRoutes = require('./routes/report');
 const uploadRoutes = require('./routes/upload');
+const tagRoutes = require('./routes/tag');
 app.use('/user', userRoutes);
 app.use('/category', categoryRoutes);
 app.use('/post', postRoutes);
@@ -47,8 +48,9 @@ app.use('/comment', commentRoutes);
 app.use('/banner', bannerRoutes);
 app.use('/report', reportRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/tag', tagRoutes);
 app.get('/', (req, res) => {
-  return res.send('Welcome to 3HBlog v2.6');
+  return res.send('Welcome to 3HBlog v2.7');
 });
 app.use('*', (req, res) => {
   res.status(404).send('404 not found');
