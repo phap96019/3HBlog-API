@@ -1,8 +1,9 @@
-const formidable = require('formidable');
-const cloudinary = require('cloudinary').v2;
-const Post = require('../../models/Post');
-const slug = require('slug');
-var ObjectID = require('mongodb').ObjectID;
+const formidable = require("formidable");
+const cloudinary = require("cloudinary").v2;
+const Post = require("../../models/Post");
+const slug = require("slug");
+var ObjectID = require("mongodb").ObjectID;
+const { getKey, setKey } = require("../../redis/redis-cli");
 
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -17,37 +18,37 @@ module.exports.create = async (req, res) => {
       try {
         const { title, content, category, tags, summary } = fields;
         // Check fields require
-        if (!title) throw 'Không được bỏ trống title';
-        if (!content) throw 'Không được bỏ trống content';
-        if (!summary) throw 'Không được bỏ trống summary';
+        if (!title) throw "Không được bỏ trống title";
+        if (!content) throw "Không được bỏ trống content";
+        if (!summary) throw "Không được bỏ trống summary";
         let ret = {};
         if (files && files.image && files.image.path) {
           const file = files.image.path;
           ret = await cloudinary.uploader.upload(file, {
-            folder: 'home/3H-blog',
+            folder: "home/3H-blog",
           });
         } else {
           ret.url =
-            'https://res.cloudinary.com/ddiqvd0ty/image/upload/v1608477520/home/3H-blog/fgvpl0ouulibkhxqjpad.jpg';
+            "https://res.cloudinary.com/ddiqvd0ty/image/upload/v1608477520/home/3H-blog/fgvpl0ouulibkhxqjpad.jpg";
         }
         let _category = [];
         if (category) {
-          const temp1 = category.split(',');
+          const temp1 = category.split(",");
           _category = temp1.map((t) => t.trim());
         }
         let _tags = [];
         if (tags) {
-          const temp1 = tags.split(',');
+          const temp1 = tags.split(",");
           _tags = temp1.map((t) => t.trim());
         }
         const post = new Post({
-          nameUrl: slug(title, '-'),
+          nameUrl: slug(title, "-"),
           title: title,
           img: ret.url,
-          content: content ? content : '',
+          content: content ? content : "",
           category: _category,
           tags: _tags,
-          summary: summary ? summary : '',
+          summary: summary ? summary : "",
         });
         await post.save();
         res.status(200).send({
@@ -74,26 +75,26 @@ module.exports.update = async (req, res) => {
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
       try {
-        if (!ObjectID.isValid(fields.id)) throw 'id không hợp lệ';
+        if (!ObjectID.isValid(fields.id)) throw "id không hợp lệ";
         const post = await Post.findOne({ _id: fields.id });
         let ret = {};
         if (post) {
           if (files && files.image && files.image.path) {
             const file = files.image.path;
             ret = await cloudinary.uploader.upload(file, {
-              folder: 'home/3H-blog',
+              folder: "home/3H-blog",
             });
           } else {
             ret.url = post.img;
           }
           const { title, content, category, tags, summary } = fields;
 
-          post.nameUrl = title ? slug(title, '-') : post.nameUrl;
+          post.nameUrl = title ? slug(title, "-") : post.nameUrl;
           post.title = title || post.title;
           post.img = ret.url;
           post.content = content || post.content;
-          post.category = category ? category.split(',') : post.category;
-          post.tags = tags ? tags.split(',') : post.tags;
+          post.category = category ? category.split(",") : post.category;
+          post.tags = tags ? tags.split(",") : post.tags;
           post.summary = summary || post.summary;
 
           await post.save();
@@ -104,7 +105,7 @@ module.exports.update = async (req, res) => {
         } else {
           res.status(403).send({
             success: false,
-            message: 'Không tìm thấy _id bài viết',
+            message: "Không tìm thấy _id bài viết",
           });
         }
       } catch (error) {
@@ -123,27 +124,36 @@ module.exports.update = async (req, res) => {
 };
 
 module.exports.load = async (req, res) => {
-  const postsNumber = await Post.countDocuments();
-  const page = parseInt(req.query.page, 10) || 1;
-  const pageSize = parseInt(req.query.pageSize, 10) || 10;
-  const posts = await Post.find()
-    .select('_id title nameUrl img summary category views tags createdAt')
-    .skip(pageSize * page - pageSize)
-    .limit(pageSize);
-  res.status(200).send({
-    total: postsNumber,
-    data: posts,
-  });
+  const data = await getKey(`listPost-${req.query.page}`);
+  if (data) {
+    console.log("load from redis");
+    res.send(JSON.parse(data));
+  } else {
+    const postsNumber = await Post.countDocuments();
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+    const posts = await Post.find()
+      .select("_id title nameUrl img summary category views tags createdAt")
+      .skip(pageSize * page - pageSize)
+      .limit(pageSize);
+    const result = {
+      total: postsNumber,
+      data: posts,
+    };
+    console.log("load from mongo");
+    res.status(200).send(result);
+    setKey(`listPost-${req.query.page}`, JSON.stringify(result));
+  }
 };
 
 module.exports.loadOne = async (req, res) => {
   const { nameUrl } = req.params;
   const post = await Post.findOne({ nameUrl: nameUrl }).populate({
-    path: 'comments',
-    select: 'user content createdAt',
+    path: "comments",
+    select: "user content createdAt",
     populate: {
-      path: 'user',
-      select: 'name email',
+      path: "user",
+      select: "name email",
     },
   });
   if (post) {
@@ -152,7 +162,7 @@ module.exports.loadOne = async (req, res) => {
     res.status(200).send(post);
   } else {
     res.status(404).send({
-      message: 'Không thể tìm thất bài viết',
+      message: "Không thể tìm thất bài viết",
     });
   }
 };
@@ -164,26 +174,26 @@ module.exports.deletePost = async (req, res) => {
     res.status(200).send(postDeleted);
   } else {
     res.status(403).send({
-      message: 'Không thể xóa được!',
+      message: "Không thể xóa được!",
     });
   }
 };
 
 module.exports.search = async (req, res) => {
-  const keySearch = slug(req.body.keySearch, '-');
-  const keySearchs = keySearch.split('-');
+  const keySearch = slug(req.body.keySearch, "-");
+  const keySearchs = keySearch.split("-");
   // get all data
   let posts = [];
   for (key of keySearchs) {
     const posts1 = await Post.find({
       nameUrl: { $regex: key },
-    }).select('_id title nameUrl img summary category views tags createdAt');
+    }).select("_id title nameUrl img summary category views tags createdAt");
     const posts2 = await Post.find({
       category: { $regex: key },
-    }).select('_id title nameUrl img summary category views tags createdAt');
+    }).select("_id title nameUrl img summary category views tags createdAt");
     const posts3 = await Post.find({
       tags: { $regex: key },
-    }).select('_id title nameUrl img summary category views tags createdAt');
+    }).select("_id title nameUrl img summary category views tags createdAt");
     posts = posts
       .concat(posts1)
       .concat(posts2)
@@ -217,7 +227,7 @@ module.exports.search = async (req, res) => {
     });
   if (posts.length === 0) {
     res.status(200).send({
-      message: 'Không tìm thấy bài viết phù hợp',
+      message: "Không tìm thấy bài viết phù hợp",
     });
   } else {
     res.status(200).send({
