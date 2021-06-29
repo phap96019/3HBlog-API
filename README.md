@@ -5,9 +5,9 @@ Backend API Blog sharing about Vietnamese cuisine
 Nodejs (Expressjs) + mongodb (Mongoose)
 
 ## How to install?
-Clone project
-run command: npm install
-create file: .env (like .env.example)
-run command: npm run dev (dev)
-run command: npm start (product)
+Clone project <space><space>
+run command: npm install <space><space>
+create file: .env (like .env.example) <space><space>
+run command: npm run dev (dev) <space><space>
+run command: npm start (product) <space><space>
 #### Done!
