@@ -20,6 +20,7 @@ postRoutes
   .route('/delete')
   .post(auth.authentication, auth.permit('admin'), postControllers.deletePost);
 postRoutes.route('/search').post(postControllers.search);
+postRoutes.route('/searchv2/:page/:keySearch').get(postControllers.searchv2);
 postRoutes.route('/load').get(postControllers.load);
 postRoutes.route('/load/:nameUrl').get(postControllers.loadOne);
 postRoutes.route('/loadRandom').get(postControllers.loadRandom);
@@ -28,4 +29,6 @@ postRoutes.route('/loadLatest').get(postControllers.loadLatest);
 postRoutes.route('/loadByCategory').get(postControllers.loadByCategory);
 postRoutes.route('/loadByTag').get(postControllers.loadByTag);
 
+// Sync Elasticsearch basic
+postRoutes.route('/syncES').get(postControllers.syncES);
 module.exports = postRoutes;

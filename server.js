@@ -18,3 +18,11 @@ const server = app.listen(PORT, () => {
 });
 
 // 3) HANDLE UNHANDLED REJECTION!
+process.once('SIGUSR2', function () {
+  process.kill(process.pid, 'SIGUSR2');
+});
+
+process.on('SIGTERM', function () {
+  // this is only called on ctrl+c, not restart
+  process.kill(process.pid, 'SIGTERM');
+});
