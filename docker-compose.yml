@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  mongodb:
+    image : mongo
+    container_name: mongodb      
+    environment:
+      - MONGO_INITDB_DATABASE=3HBlog
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=amadeus
+    volumes:
+    - ./data/db:/data/db
+    ports:
+    - 27017:27017
+    restart: unless-stopped
+
+  backend:
+    env_file:
+      - .env
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongodb
+    restart: always
